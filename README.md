@@ -1,251 +1,176 @@
-# 🌬️ Ventilation Dashboard
+🌬️ Ventilation Dashboard
 
-A full-stack dashboard for monitoring and controlling a ventilation system (Östberg HERU) using Spring Boot, React, and Modbus TCP.
+A full-stack IoT dashboard for monitoring a ventilation system (Östberg HERU) using Spring Boot, React, and Modbus TCP.
 
----
+⸻
 
-## 🚀 Overview
+🚀 Overview
 
-This project is a **home automation / IoT dashboard** that connects to a ventilation system and visualizes real-time data such as:
+This project connects directly to a real ventilation system over Modbus TCP and exposes live operational data through a custom-built API and dashboard.
 
-* Supply air temperature
-* Extract air temperature
-* Fan speed
-* System mode
+The goal was to understand how the system works internally and build a complete data pipeline from hardware → backend → frontend.
 
-The architecture is designed to be scalable and production-ready.
+⸻
 
----
+🧠 Architecture
 
-## 🧠 Architecture
+[ Ventilation System (Östberg HERU) ]
+              │
+      (Modbus TCP / Ethernet)
+              │
+   [ Spring Boot Backend ]
+              │
+        REST API (JSON)
+              │
+ [ React Frontend Dashboard ]
 
-```
-[ Ventilation System ]
-          │
-   (Modbus TCP / Ethernet)
-          │
-[ Spring Boot Backend ]
-          │
-     REST API (JSON)
-          │
-[ React Frontend Dashboard ]
-```
 
----
+⸻
 
-## 🛠️ Tech Stack
+🛠️ Tech Stack
 
-### Backend
+Backend
+	•	Java 17
+	•	Spring Boot
+	•	Maven
+	•	Modbus TCP (digitalpetri)
 
-* Java 17
-* Spring Boot 4
-* Maven
-* REST API
+Frontend
+	•	React (Vite)
+	•	JavaScript
+	•	Custom dashboard UI
 
-### Frontend
+Infrastructure
+	•	Linux (Ubuntu)
+	•	Local network (LAN)
+	•	Raspberry Pi (planned deployment)
 
-* React (Vite)
-* JavaScript
-* CSS (Matrix-inspired UI)
+⸻
 
-### Infrastructure
+🔌 Features
+	•	✅ Reads real-time data from ventilation system via Modbus
+	•	✅ Exposes data through REST API
+	•	✅ Displays live data in a React dashboard
+	•	🔜 Automation & remote access
 
-* Linux (Ubuntu)
-* Raspberry Pi (planned)
-* Modbus TCP (planned integration)
+⸻
 
----
+📊 Example API Response
 
-## 📦 Project Structure
+{
+  "supplyFanPercent": 72,
+  "extractFanPercent": 75,
+  "recoveryPercent": 100,
+  "rawRegisters": [15,24,72,75,45,100,0,0,0,0]
+}
 
-```
+
+⸻
+
+📦 Project Structure
+
 ventilation-dashboard/
 ├── backend/         # Spring Boot API
 ├── frontend/        # React dashboard
-├── docs/            # Documentation
+├── docs/
 └── README.md
-```
 
----
 
-## ⚙️ Backend Setup (Spring Boot)
+⸻
 
-### 1. Navigate to backend
+⚙️ Backend Setup
 
-```bash
 cd backend
-```
-
-### 2. Run application
-
-```bash
 ./mvnw spring-boot:run
-```
 
-### 3. API Endpoint
+API:
 
-```
 GET http://localhost:8080/api/ventilation/status
-```
 
-### Example response
 
-```json
-{
-  "supplyTemp": 21.5,
-  "extractTemp": 22.0,
-  "fanSpeed": 70,
-  "mode": "NORMAL"
-}
-```
+⸻
 
----
+🎨 Frontend Setup
 
-## 🎨 Frontend Setup (React)
-
-### 1. Navigate to frontend
-
-```bash
 cd frontend
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
-```
-
-### 3. Start dev server
-
-```bash
 npm run dev
-```
 
-### 4. Open in browser
+Open:
 
-```
 http://localhost:5173
-```
 
----
 
-## 🔄 Development Workflow
+⸻
 
-You need **two terminals running**:
+🌐 Networking
 
-### Terminal 1 (Backend)
+The ventilation unit is connected directly via Ethernet and accessed over LAN.
 
-```bash
-cd backend
-./mvnw spring-boot:run
-```
+To discover the device:
 
-### Terminal 2 (Frontend)
-
-```bash
-cd frontend
-npm run dev
-```
-
----
-
-## 🌐 Networking Setup (Ventilation)
-
-To connect the ventilation system:
-
-1. Use a standard Ethernet cable (Cat5e or Cat6)
-
-2. Connect ventilation unit to router/switch
-
-3. Enable:
-
-   * Modbus TCP
-   * Port 502
-
-4. Find device IP:
-
-```bash
-arp -a
-```
-
-or:
-
-```bash
 nmap 192.168.0.0/24
-```
 
----
+Modbus TCP runs on:
 
-## 🔌 Modbus Integration (Planned)
+Port 502
 
-Next step is to replace mock data with real data:
 
-* Connect to Modbus TCP (port 502)
-* Read registers from ventilation unit
-* Map values to API
+⸻
 
-Example future endpoint:
+🧠 Learning Goals
 
-```
-GET /api/ventilation/status → real hardware data
-```
+This project was used to:
+	•	Learn React (previously only used Thymeleaf)
+	•	Work with separated frontend/backend architecture
+	•	Integrate real hardware using Modbus
+	•	Build a full data pipeline from device → API → UI
 
----
+⸻
 
-## ⚠️ Safety Notes
+⚠️ Safety
+	•	Do not modify internal wiring
+	•	Disconnect power before opening unit
+	•	RJ45 connection is safe
 
-* Always disconnect power before opening ventilation unit
-* Do not modify internal wiring unless qualified
-* Network connection (RJ45) is safe
+⸻
 
----
+🧪 Current Status
+	•	✅ Real Modbus data integrated
+	•	✅ Backend connected to hardware
+	•	✅ Frontend displaying live data
+	•	🔜 Better register mapping
+	•	🔜 Mobile-friendly UI
+	•	🔜 Remote access
 
-## 🧪 Current Status
+⸻
 
-* ✅ Backend API working
-* ✅ Frontend dashboard working
-* ✅ Data flow (mock → UI)
-* 🔜 Modbus integration
-* 🔜 Raspberry Pi deployment
-* 🔜 Real-time updates (WebSocket)
+📈 Roadmap
+	•	Complete register mapping
+	•	Historical data logging
+	•	WebSocket live updates
+	•	Mobile UI
+	•	Raspberry Pi deployment
+	•	Remote access (VPN / tunneling)
 
----
+⸻
 
-## 📈 Roadmap
+💡 Future Ideas
+	•	Smart home integration (Home Assistant)
+	•	Automation rules (CO₂ → fan boost)
+	•	Energy monitoring
 
-* [ ] Modbus TCP integration
-* [ ] Real sensor data
-* [ ] Historical graphs
-* [ ] WebSocket live updates
-* [ ] Authentication (login)
-* [ ] Mobile-friendly UI
-* [ ] Docker deployment
+⸻
 
----
-
-## 💡 Future Ideas
-
-* Smart home integration (Home Assistant)
-* AI-based airflow optimization
-* Energy efficiency tracking
-* Alerts & notifications
-
----
-
-## 🤝 Contributing
-
-This is currently a personal project, but contributions and ideas are welcome.
-
----
-
-## 👨‍💻 Author
+👨‍💻 Author
 
 Filip Gustavesen
 
----
+⸻
 
-## ⚡ License
+⚡ License
 
-MIT (or choose later)
+MIT (TBD)
+:::
 
----
+⸻
