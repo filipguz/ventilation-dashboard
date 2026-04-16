@@ -1,176 +1,191 @@
+
 🌬️ Ventilation Dashboard
-
-A full-stack IoT dashboard for monitoring a ventilation system (Östberg HERU) using Spring Boot, React, and Modbus TCP.
-
+A full-stack dashboard for reading live data from an Östberg HERU ventilation system using Spring Boot, React, and Modbus TCP.
+Overview
+This project connects directly to a real ventilation unit over Modbus TCP and exposes live operational data through a custom backend and frontend dashboard.
+The current goal is read-only monitoring. The system reads live values from the ventilation unit and displays them in a custom React dashboard.
+Control and write functionality may be added later, once register mapping is better understood and tested safely.
+ 
 ⸻
-
-🚀 Overview
-
-This project connects directly to a real ventilation system over Modbus TCP and exposes live operational data through a custom-built API and dashboard.
-
-The goal was to understand how the system works internally and build a complete data pipeline from hardware → backend → frontend.
-
+ 
+Current Scope
+This project currently focuses on:
+* Reading live data from the ventilation system
+* Exposing the data through a Spring Boot API
+* Displaying the data in a React dashboard
+* Learning modern separated backend/frontend architecture
+This project is intentionally read-only for now.
+ 
 ⸻
-
-🧠 Architecture
-
-[ Ventilation System (Östberg HERU) ]
-              │
-      (Modbus TCP / Ethernet)
-              │
-   [ Spring Boot Backend ]
-              │
-        REST API (JSON)
-              │
- [ React Frontend Dashboard ]
-
-
+ 
+Why this project
+I started this project to better understand how my home ventilation system works internally and to learn more about:
+* React
+* separated frontend/backend architecture
+* hardware/software integration
+* Modbus TCP
+* real-world debugging and reverse engineering
+Previously I had mostly worked with server-rendered applications using Thymeleaf. This project is also a way for me to get hands-on experience with a more modern frontend stack.
+ 
 ⸻
-
-🛠️ Tech Stack
-
+ 
+Architecture
+[ Östberg HERU Ventilation Unit ]
+                │
+        (Modbus TCP / Ethernet)
+                │
+      [ Spring Boot Backend ]
+                │
+           REST API (JSON)
+                │
+      [ React Frontend Dashboard ]
+ 
+⸻
+ 
+Tech Stack
 Backend
-	•	Java 17
-	•	Spring Boot
-	•	Maven
-	•	Modbus TCP (digitalpetri)
-
+* Java 17
+* Spring Boot
+* Maven
+* REST API
 Frontend
-	•	React (Vite)
-	•	JavaScript
-	•	Custom dashboard UI
-
-Infrastructure
-	•	Linux (Ubuntu)
-	•	Local network (LAN)
-	•	Raspberry Pi (planned deployment)
-
+* React
+* Vite
+* JavaScript
+* Custom dashboard UI
+Communication
+* Modbus TCP
+* Local network (LAN)
+ 
 ⸻
-
-🔌 Features
-	•	✅ Reads real-time data from ventilation system via Modbus
-	•	✅ Exposes data through REST API
-	•	✅ Displays live data in a React dashboard
-	•	🔜 Automation & remote access
-
+ 
+Features
+Implemented
+* Read live data from the ventilation system via Modbus TCP
+* Expose data through a backend API
+* Display live values in a React dashboard
+* Local development setup for backend + frontend
+Planned
+* Better register mapping
+* Cleaner domain model for temperatures, fan values and modes
+* Historical data / charts
+* Mobile-friendly dashboard
+* Safe control/write support later
+ 
 ⸻
-
-📊 Example API Response
-
+ 
+Example Data
+Example raw register output from the ventilation unit:
+[15, 24, 72, 75, 45, 100, 0, 0, 0, 0]
+Example API response:
 {
   "supplyFanPercent": 72,
   "extractFanPercent": 75,
   "recoveryPercent": 100,
-  "rawRegisters": [15,24,72,75,45,100,0,0,0,0]
+  "rawReg0": 15,
+  "rawReg1": 24,
+  "mode": "UNKNOWN",
+  "rawRegisters": [15, 24, 72, 75, 45, 100, 0, 0, 0, 0]
 }
-
-
+ 
 ⸻
-
-📦 Project Structure
-
+ 
+Project Structure
 ventilation-dashboard/
 ├── backend/         # Spring Boot API
 ├── frontend/        # React dashboard
-├── docs/
+├── docs/            # Notes / mapping / screenshots
 └── README.md
-
-
+ 
 ⸻
-
-⚙️ Backend Setup
-
+ 
+Backend Setup
 cd backend
 ./mvnw spring-boot:run
-
-API:
-
+API endpoint:
 GET http://localhost:8080/api/ventilation/status
-
-
+ 
 ⸻
-
-🎨 Frontend Setup
-
+ 
+Frontend Setup
 cd frontend
 npm install
 npm run dev
-
-Open:
-
+Open in browser:
 http://localhost:5173
-
-
+ 
 ⸻
-
-🌐 Networking
-
-The ventilation unit is connected directly via Ethernet and accessed over LAN.
-
+ 
+Development Workflow
+You normally need two terminals:
+Terminal 1 - Backend
+cd backend
+./mvnw spring-boot:run
+Terminal 2 - Frontend
+cd frontend
+npm run dev
+ 
+⸻
+ 
+Modbus / Device Setup
+The ventilation unit is connected to the local network over Ethernet.
 To discover the device:
-
 nmap 192.168.0.0/24
-
-Modbus TCP runs on:
-
-Port 502
-
-
+To verify Modbus TCP:
+nmap 192.168.0.160 -p 502
+Read test data using Python:
+python test_modbus.py
+ 
 ⸻
-
-🧠 Learning Goals
-
-This project was used to:
-	•	Learn React (previously only used Thymeleaf)
-	•	Work with separated frontend/backend architecture
-	•	Integrate real hardware using Modbus
-	•	Build a full data pipeline from device → API → UI
-
+ 
+Safety
+This project is currently read-only.
+That is intentional.
+Before enabling any write functionality, register mapping must be verified carefully to avoid sending incorrect values to the ventilation system.
+General safety notes:
+* disconnect power before opening the unit
+* do not modify internal wiring
+* do not write to unknown Modbus registers
+* treat all write functionality as future work
+ 
 ⸻
-
-⚠️ Safety
-	•	Do not modify internal wiring
-	•	Disconnect power before opening unit
-	•	RJ45 connection is safe
-
+ 
+Current Status
+* ✅ Ventilation unit connected to network
+* ✅ Modbus TCP enabled
+* ✅ Live data read successfully
+* ✅ Spring Boot backend working
+* ✅ React frontend working
+* ✅ API and dashboard connected
+* 🔜 Better register mapping
+* 🔜 Live production-ready dashboard
+* 🔜 Safe control support later
+ 
 ⸻
-
-🧪 Current Status
-	•	✅ Real Modbus data integrated
-	•	✅ Backend connected to hardware
-	•	✅ Frontend displaying live data
-	•	🔜 Better register mapping
-	•	🔜 Mobile-friendly UI
-	•	🔜 Remote access
-
+ 
+Roadmap
+* Confirm register meanings more accurately
+* Replace preliminary field names with real domain names
+* Improve dashboard UI
+* Add charts / historical data
+* Improve error handling
+* Add mobile-friendly layout
+* Add safe write functionality later
+ 
 ⸻
-
-📈 Roadmap
-	•	Complete register mapping
-	•	Historical data logging
-	•	WebSocket live updates
-	•	Mobile UI
-	•	Raspberry Pi deployment
-	•	Remote access (VPN / tunneling)
-
-⸻
-
-💡 Future Ideas
-	•	Smart home integration (Home Assistant)
-	•	Automation rules (CO₂ → fan boost)
-	•	Energy monitoring
-
-⸻
-
-👨‍💻 Author
-
+ 
+Author
 Filip Gustavesen
-
+ 
 ⸻
+ 
+Notes
+This is a practical learning project built around a real device.
+The goal is not only to build a useful dashboard, but also to learn:
+* system architecture
+* frontend/backend separation
+* industrial protocols
+* debugging and reverse engineering
+* working with real hardware
+ 
 
-⚡ License
-
-MIT (TBD)
-:::
-
-⸻
